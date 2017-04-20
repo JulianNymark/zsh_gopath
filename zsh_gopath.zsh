@@ -6,18 +6,17 @@ set_gopath() {
 
 set_gopath_recurse() {
     if [ -d "$1/go" ]; then
-        new_gopath "$1/go"
+        new_gopath "$(realpath $1)/go"
         return
     fi;
 
-    if [ "$1" -ef "/" ]; then
+    if [ "$(realpath $1)" = "/" ]; then
         if [ -z $GOPATH ]; then
             echo "GOPATH NOT SET ( recursive 'cd ..' found no ./go )"
         fi;
         return
     fi;
-    cd ..
-    set_gopath_recurse "../"$1
+    set_gopath_recurse $1"/.."
 }
 
 new_gopath() {
